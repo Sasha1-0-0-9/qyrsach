@@ -16,20 +16,14 @@ namespace SudokuApplication
 {
     public partial class SudokuForm : Form, INumberObserver
     {
-        /* Fields */
-
-        // Application
         private Sudoku _sudoku;
         private Padding _applicationMargin;
         private string _filePath;
         private bool _unsavedChanges = false;
 
-        // Graphics
         private Bitmap _bitmap;
         private int _cellSize;
         private Padding _boardMargin;
-
-        // Game data
         private int _boardSize;
         private int _blockWidth;
         private int _blockHeight;
@@ -39,40 +33,30 @@ namespace SudokuApplication
         private StringBuilder _valueBuffer = new StringBuilder();
         private bool _noteFlag = false;
 
-
-        /* Constructors */
-
         public SudokuForm()
         {
             InitializeComponent();
 
-            // Initialize fields
             _sudoku = new Sudoku();
             _applicationMargin = new Padding(0, menuStrip.Height, 0, 0);
             _cellSize = 48;
             _boardMargin = new Padding(15);
 
-            // Start application with a 9x9 board with difficulty medium
             GenerateBoard(9, 1);
         }
 
 
-        /* Helper methods */
-
         private Coordinate CalculateClickedCell(int x, int y)
         {
-            // Compensate for location of bitmap
             x -= _applicationMargin.Left;
             y -= _applicationMargin.Top;
 
-            // Check if the click is out of range
             if (x < _boardMargin.Left || x >= (_bitmap.Width - _boardMargin.Right) ||
                 y < _boardMargin.Top || y >= (_bitmap.Height - _boardMargin.Bottom))
             {
                 return null;
             }
 
-            // Calculate and return coordinate
             int row = (y - _boardMargin.Top) / _cellSize;
             int column = (x - _boardMargin.Left) / _cellSize;
 
@@ -119,26 +103,9 @@ namespace SudokuApplication
             if (wasCompleted)
                 UpdateBoard();
 
-            // Set number changed
             _unsavedChanges = true;
         }
 
-        //private void UpdateFilePath(string filePath)
-        //{
-        //    // Store filepath
-        //    _filePath = filePath;
-
-        //    // Update title bar
-        //    if (_filePath != null)
-        //    {
-        //        string fileName = Path.GetFileNameWithoutExtension(filePath);
-        //        this.Text = String.Format("{0} - {1}", fileName, Resources.ApplicationName);
-        //    }
-        //    else
-        //        this.Text = Resources.ApplicationName;
-        //}
-
-        /* Messages */
 
         private bool ConfirmEndGamePrompt()
         {
@@ -182,83 +149,31 @@ namespace SudokuApplication
             MessageBox.Show(Resources.UnsolvableBoardDescription, Resources.UnsolvableBoardTitle, MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
 
-        /* Board methods */
 
         public void CreateBlankBoard(int boardSize)
         {
             if (ConfirmEndGamePrompt())
                 return;
-
-            // Create a new game
             if (!_sudoku.NewGame(boardSize))
                 return;
 
             InitializeBoard();
 
-            // Expect the lock numbers to be performed
-            //ActivateLockNumberMenuItem();
         }
 
         public void GenerateBoard(int boardSize, int difficulty)
         {
             if (ConfirmEndGamePrompt())
                 return;
-
-            // Create a new game
             if (!_sudoku.NewGame(boardSize, difficulty))
                 return;
 
             InitializeBoard();
         }
-
-        //private void LoadBoard(string filePath)
-        //{
-        //    if (ConfirmEndGamePrompt())
-        //        return;
-
-        //    try
-        //    {
-        //        string boardData = File.ReadAllText(filePath);
-        //        if (_sudoku.ImportBoard(boardData))
-        //        {
-        //            InitializeBoard();
-
-        //            // Save file path
-        //            UpdateFilePath(filePath);
-        //        }
-        //        else
-        //        {
-        //            InvalidImportAlert();
-        //        }
-        //    }
-        //    catch (IOException)
-        //    { }
-        //}
-
-        //private void SaveBoard(string filePath)
-        //{
-        //    try
-        //    {
-        //        string boardData = _sudoku.ExportBoard();
-        //        File.WriteAllText(filePath, boardData);
-
-        //        // Save file path
-        //        UpdateFilePath(filePath);
-
-        //        // Reset unsaved changes
-        //        _unsavedChanges = false;
-        //    }
-        //    catch (IOException)
-        //    { }
-        //}
-
-        // Method is run by CreateBlankBoard(), GenerateBoard() and LoadBoard()
         private void InitializeBoard()
         {
-            // Get updates
             _sudoku.SubscribeToNumberChanges(this);
 
-            // Initialize fields
             _boardSize = _sudoku.GetBoardSize();
             _blockWidth = _sudoku.GetBlockWidth();
             _blockHeight = _sudoku.GetBlockHeight();
@@ -266,7 +181,6 @@ namespace SudokuApplication
             _notes = new List<int>[_boardSize, _boardSize];
             _selectedCell = null;
 
-            // Create empty list of notes for each cell
             for (int i = 0; i != _boardSize; i++)
             {
                 for (int j = 0; j != _boardSize; j++)
@@ -275,29 +189,18 @@ namespace SudokuApplication
                 }
             }
 
-            // Update board
             UpdateBoard();
 
-            // Code from: http://ivision.wordpress.com/2007/01/05/title-bar-height-and-form-border-width-of-net-form/
             int borderWidth = (this.Width - this.ClientSize.Width) / 2;
             int titlebarHeight = this.Height - this.ClientSize.Height - 2 * borderWidth;
 
-            // Set form size
             this.Width = _applicationMargin.Left + _bitmap.Width + _applicationMargin.Right + 2 * borderWidth;
             this.Height = _applicationMargin.Top + _bitmap.Height + _applicationMargin.Bottom + titlebarHeight + 2 * borderWidth;
 
-            // Disable the lock numbers menu item
-            //ActivateLockNumberMenuItem(false);
-
-            // Reset file path
-            //UpdateFilePath(null);
-
-            // Reset unsaved changes
             _unsavedChanges = false;
         }
 
 
-        /* Drawing methods */
 
         private void SudokuForm_Paint(object sender, PaintEventArgs e)
         {
@@ -306,18 +209,47 @@ namespace SudokuApplication
             graphicsObject.Dispose();
         }
 
+        private void SaveBoard(string filePath)
+        {
+            try
+            {
+                string boardData = _sudoku.ExportBoard();
+                File.WriteAllText(filePath, boardData);
+
+                // Save file path
+                UpdateFilePath(filePath);
+
+                // Reset unsaved changes
+                _unsavedChanges = false;
+            }
+            catch (IOException)
+            { }
+        }
+
+        private void UpdateFilePath(string filePath)
+        {
+            // Store filepath
+            _filePath = filePath;
+
+            // Update title bar
+            if (_filePath != null)
+            {
+                string fileName = Path.GetFileNameWithoutExtension(filePath);
+                this.Text = String.Format("{0} - {1}", fileName, Resources.ApplicationName);
+            }
+            else
+                this.Text = Resources.ApplicationName;
+        }
+
         private void UpdateBoard()
         {
-            // Calculate bitmap size, create a new bitmap and get graphics context
             int bitmapWidth = _boardMargin.Left + _cellSize * _boardSize + _boardMargin.Right;
             int bitmapHeight = _boardMargin.Top + _cellSize * _boardSize + _boardMargin.Bottom;
             _bitmap = new Bitmap(bitmapWidth, bitmapHeight, PixelFormat.Format24bppRgb);
             Graphics graphicsContext = Graphics.FromImage(_bitmap);
 
-            // Background color
             graphicsContext.Clear(BackColor);
 
-            // Draw each cell
             for (int row = 0; row != _boardSize; row++)
             {
                 for (int column = 0; column != _boardSize; column++)
@@ -326,17 +258,12 @@ namespace SudokuApplication
                 }
             }
 
-            // Block configuration
             Pen outerStroke = new Pen(Color.Black, 3);
-
-            // Draw outline of board
             Rectangle boardRectangle = new Rectangle(_boardMargin.Left, _boardMargin.Top, _boardSize * _cellSize, _boardSize * _cellSize);
             graphicsContext.DrawRectangle(outerStroke, boardRectangle);
 
-            // End drawing
             graphicsContext.Dispose();
 
-            // Invalidate the whole board
             Invalidate();
         }
 
@@ -344,34 +271,27 @@ namespace SudokuApplication
         {
             HashSet<Coordinate> affectedBlocks = new HashSet<Coordinate>();
 
-            // Redraw affected cells
             foreach (Coordinate cell in cells)
             {
-                // Skip invalid cells
                 if (cell == null)
                     continue;
 
-                // Draw cell
                 DrawCell(cell.Row, cell.Column);
 
-                // Invalidate cell
                 Invalidate(CalculateRectangleForCell(cell.Row, cell.Column));
             }
         }
 
         private void DrawCell(int row, int column)
         {
-            // Cell configuration
             SolidBrush selectedCellBrush = new SolidBrush(Color.Beige);
             Pen innerStroke = new Pen(Color.Black, 1);
 
-            // Calculate rectangle
             Rectangle valueRectangle = new Rectangle(_boardMargin.Left + column * _cellSize, _boardMargin.Top + row * _cellSize, _cellSize, _cellSize);
 
-            // Start drawing
+
             Graphics graphicsContext = Graphics.FromImage(_bitmap);
 
-            // Check if cell is selected and add background color
             if (_selectedCell != null && row == _selectedCell.Row && column == _selectedCell.Column)
                 graphicsContext.FillRectangle(selectedCellBrush, valueRectangle);
             else
@@ -397,44 +317,19 @@ namespace SudokuApplication
             }
             else
             {
-                // Draw value if it exists, otherwise draw notes if they exist
                 if (!_sudoku.IsNumberBlank(row, column))
                 {
-                    // Color configurations
                     SolidBrush predefinedBrush = new SolidBrush(Color.Blue);
                     SolidBrush valueBrush = new SolidBrush(Color.Black);
                     SolidBrush errorBrush = new SolidBrush(Color.Red);
                     SolidBrush validatedBrush = new SolidBrush(Color.Green);
-
-                    // Get state
                     int value = _sudoku.GetNumber(row, column);
                     bool predefined = _sudoku.IsNumberPredefined(row, column);
-
-                    // Determine brush
                     SolidBrush currentBrush = (predefined) ? predefinedBrush : valueBrush;
 
-                    // Set validation
                     bool errorReporting = Properties.Settings.Default.IndicateWrongNumbers;
                     bool validationReporting = Properties.Settings.Default.IndicateValidatedSections;
 
-                    //if (lockNumbersToolStripMenuItem.Enabled == false && !_sudoku.IsNumberPredefined(row, column))
-                    //{
-                    //    if (validationReporting)
-                    //    {
-                    //        bool sectionCompleted = _sudoku.IsSectionCompleted(row, column);
-                    //        if (sectionCompleted)
-                    //            currentBrush = validatedBrush;
-                    //    }
-
-                    //    if (errorReporting)
-                    //    {
-                    //        int correctValue = _sudoku.GetCorrectNumber(row, column);
-                    //        if (value != correctValue)
-                    //            currentBrush = errorBrush;
-                    //    }
-                    //}
-
-                    // Draw number
                     DrawNumber(valueRectangle, value, currentBrush);
                 }
                 else
@@ -446,24 +341,20 @@ namespace SudokuApplication
                 }
             }
 
-
-            // Draw cell rectangle and accompanying block stroke
             graphicsContext.DrawRectangle(innerStroke, valueRectangle);
             DrawBlockStroke(row, column);
 
-            // End drawing
+
             graphicsContext.Dispose();
         }
 
         private void DrawNumber(Rectangle rectangle, int value, SolidBrush textColor)
         {
-            // Number text configuration
             Font valueFont = new Font("Tahoma", 24.0f);
             StringFormat valueFormat = new StringFormat();
             valueFormat.Alignment = StringAlignment.Center;
             valueFormat.LineAlignment = StringAlignment.Center;
 
-            // Draw number
             Graphics graphicsContext = Graphics.FromImage(_bitmap);
             graphicsContext.DrawString(value.ToString(), valueFont, textColor, rectangle, valueFormat);
             graphicsContext.Dispose();
@@ -471,27 +362,21 @@ namespace SudokuApplication
 
         private void DrawNote(Rectangle rectangle, int noteValue)
         {
-            // Note text configuration
             SolidBrush noteBrush = new SolidBrush(Color.Black);
             Font noteFont = new Font("Tahoma", 6.0f);
             StringFormat noteFormat = new StringFormat();
             noteFormat.Alignment = StringAlignment.Center;
             noteFormat.LineAlignment = StringAlignment.Center;
-
-            // Note sizes
             int noteWidth = _cellSize / _blockWidth;
             int noteHeight = _cellSize / _blockHeight;
             int noteLeftMargin = (_cellSize - noteWidth * _blockWidth) / 2;
             int noteTopMargin = (_cellSize - noteHeight * _blockHeight) / 2;
 
-            // Calculate position
             int noteRow = (noteValue - 1) / _blockWidth;
             int noteColumn = (noteValue - 1) % _blockWidth;
 
-            // Calculate rectangle
             Rectangle noteRectangle = new Rectangle(rectangle.Left + noteLeftMargin + noteWidth * noteColumn, rectangle.Top + noteTopMargin + noteHeight * noteRow, noteWidth, noteHeight);
 
-            // Draw note
             Graphics graphicsContext = Graphics.FromImage(_bitmap);
             graphicsContext.DrawString(noteValue.ToString(), noteFont, noteBrush, noteRectangle, noteFormat);
             graphicsContext.Dispose();
@@ -499,10 +384,8 @@ namespace SudokuApplication
 
         private void DrawBlockStroke(int row, int column)
         {
-            // Block configuration
             Pen outerStroke = new Pen(Color.Black, 3);
 
-            // Draw left and right border
             if ((column % _blockWidth) == 0 || (column % _blockWidth) == (_blockWidth - 1))
             {
                 int right = ((column % _blockWidth) == (_blockWidth - 1)) ? _blockWidth : 0;
@@ -516,13 +399,12 @@ namespace SudokuApplication
                 Point pt1 = new Point(x1, y1);
                 Point pt2 = new Point(x2, y2);
 
-                // Draw block
+
                 Graphics graphicsContext = Graphics.FromImage(_bitmap);
                 graphicsContext.DrawLine(outerStroke, pt1, pt2);
                 graphicsContext.Dispose();
             }
 
-            // Draw top and bottom border
             if ((row % _blockHeight) == 0 || (row % _blockHeight) == (_blockHeight - 1))
             {
                 int bottom = ((row % _blockHeight) == (_blockHeight - 1)) ? _blockHeight : 0;
@@ -536,7 +418,7 @@ namespace SudokuApplication
                 Point pt1 = new Point(x1, y1);
                 Point pt2 = new Point(x2, y2);
 
-                // Draw block
+
                 Graphics graphicsContext = Graphics.FromImage(_bitmap);
                 graphicsContext.DrawLine(outerStroke, pt1, pt2);
                 graphicsContext.Dispose();
@@ -544,7 +426,6 @@ namespace SudokuApplication
         }
 
 
-        /* Events */
 
         private void SudokuForm_MouseClick(object sender, MouseEventArgs e)
         {
@@ -570,7 +451,6 @@ namespace SudokuApplication
             if (_selectedCell == null || _sudoku.IsBoardCompleted())
                 return;
 
-            // Check if Delete or Backspace was pressed
             if (e.KeyValue == 46 || e.KeyValue == 8)
             {
                 _valueBuffer.Clear();
@@ -582,8 +462,6 @@ namespace SudokuApplication
                 if (wasCompleted)
                     UpdateBoard();
             }
-
-            // Check if Escape was pressed
             else if (e.KeyValue == 27)
             {
                 Coordinate previousCell = _selectedCell;
@@ -594,7 +472,6 @@ namespace SudokuApplication
                 UpdateCells(previousCell);
             }
 
-            // Check if an arrow key was pressed
             else if (e.KeyValue >= 37 && e.KeyValue <= 40)
             {
                 CommitNumber();
@@ -620,7 +497,6 @@ namespace SudokuApplication
                 UpdateCells(previousCell, _selectedCell);
             }
 
-            // Check if tab key was pressed
             else if (e.KeyValue == 9)
             {
                 CommitNumber();
@@ -647,13 +523,11 @@ namespace SudokuApplication
                 UpdateCells(previousCell, _selectedCell);
             }
 
-            // Check if Return was pressed
             else if (e.KeyValue == 13)
             {
                 CommitNumber();
             }
 
-            // Check if a number or numpad was pressed
             else if ((e.KeyValue >= 48 && e.KeyValue <= 57) ||
                      (e.KeyValue >= 96 && e.KeyValue <= 105))
             {
@@ -685,9 +559,6 @@ namespace SudokuApplication
                 e.Cancel = true;
         }
 
-
-        /* File menu */
-
         private void newToolStripMenuItem_Click(object sender, EventArgs e)
         {
             NewGameDialog newGame = new NewGameDialog(this);
@@ -695,148 +566,30 @@ namespace SudokuApplication
 
         }
 
-        //private void openToolStripMenuItem_Click(object sender, EventArgs e)
-        //{
-        //    DialogResult openResult = openFileDialog.ShowDialog();
-        //    if (openResult == DialogResult.OK)
-        //    {
-        //        string fileName = openFileDialog.FileName;
-        //        LoadBoard(fileName);
-        //    }
-        //}
+        private void LoadBoard(string filePath)
+        {
+            if (ConfirmEndGamePrompt())
+                return;
 
-        //private void saveToolStripMenuItem_Click(object sender, EventArgs e)
-        //{
-        //    if (_unsavedChanges)
-        //    {
-        //        if (_filePath != null)
-        //        {
-        //            // Save to current file path
-        //            SaveBoard(_filePath);
-        //        }
-        //        else
-        //        {
-        //            saveAsToolStripMenuItem_Click(sender, e);
-        //        }
-        //    }
-        //}
+            try
+            {
+                string boardData = File.ReadAllText(filePath);
+                if (_sudoku.ImportBoard(boardData))
+                {
+                    InitializeBoard();
 
-        //private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
-        //{
-        //    // Save using default name
-        //    saveFileDialog.FileName = Path.GetFileName(_filePath);
-        //    DialogResult result = saveFileDialog.ShowDialog();
-        //    if (result == DialogResult.OK)
-        //    {
-        //        string fileName = saveFileDialog.FileName;
-        //        SaveBoard(fileName);
-        //    }
-        //}
+                    // Save file path
+                    UpdateFilePath(filePath);
+                }
+                else
+                {
+                    InvalidImportAlert();
+                }
+            }
+            catch (IOException)
+            { }
+        }
 
-        //private void exitToolStripMenuItem_Click(object sender, EventArgs e)
-        //{
-        //    // Close form
-        //    this.Close();
-        //}
-
-
-        /* Edit menu */
-
-        //private void cutToolStripMenuItem_Click(object sender, EventArgs e)
-        //{
-        //    if (_selectedCell == null)
-        //        return;
-
-        //    copyToolStripMenuItem_Click(sender, e);
-        //    _sudoku.ClearNumber(_selectedCell.Row, _selectedCell.Column);
-        //}
-
-        //private void copyToolStripMenuItem_Click(object sender, EventArgs e)
-        //{
-        //    if (_selectedCell == null)
-        //        return;
-
-        //    string value = _sudoku.GetNumber(_selectedCell.Row, _selectedCell.Column).ToString();
-        //    Clipboard.SetText(value);
-        //}
-
-        //private void pasteToolStripMenuItem_Click(object sender, EventArgs e)
-        //{
-        //    if (_selectedCell == null)
-        //        return;
-
-        //    int value = Convert.ToInt32(Clipboard.GetText());
-        //    _sudoku.SetNumber(_selectedCell.Row, _selectedCell.Column, value);
-        //}
-
-
-        /* Game menu */
-
-        //private void lockNumbersToolStripMenuItem_Click(object sender, EventArgs e)
-        //{
-        //    CommitNumber();
-
-        //    try
-        //    {
-        //        _sudoku.LockNumbers();
-        //        //ActivateLockNumberMenuItem(false);
-        //        UpdateBoard();
-        //    }
-        //    catch (InvalidBoardException)
-        //    {
-        //        InvalidBoardAlert();
-        //    }
-        //}
-
-        //private void getHintToolStripMenuItem_Click(object sender, EventArgs e)
-        //{
-        //    CommitNumber();
-
-        //    try
-        //    {
-        //        _sudoku.ApplyHint();
-        //    }
-        //    catch (UnsolvableBoardException)
-        //    {
-        //        UnsolvableBoardAlert();
-        //    }
-            
-        //}
-
-        //private void surrenderToolStripMenuItem_Click(object sender, EventArgs e)
-        //{
-        //    CommitNumber();
-
-        //    try
-        //    {
-        //        _sudoku.Surrender();
-        //        UpdateBoard();
-        //    }
-        //    catch (UnsolvableBoardException)
-        //    {
-        //        UnsolvableBoardAlert();
-        //    }
-        //}
-
-        //private void optionsToolStripMenuItem1_Click(object sender, EventArgs e)
-        //{
-        //    // Show options dialog
-        //    OptionsDialog optionsDialog = new OptionsDialog();
-        //    DialogResult result = optionsDialog.ShowDialog();
-
-        //    if (result == DialogResult.OK)
-        //        UpdateBoard();
-        //}
-
-        //private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
-        //{
-        //    // Show about dialog
-        //    AboutDialog aboutDialog = new AboutDialog();
-        //    aboutDialog.ShowDialog();
-        //}
-
-
-        /* INumberObserver */
 
         public void UpdateNumber(Coordinate cell)
         {
@@ -847,7 +600,6 @@ namespace SudokuApplication
 
             if (_sudoku.IsBoardCompleted())
             {
-                // Remove highlight
                 Coordinate previousCell = _selectedCell;
 
                 _valueBuffer.Clear();
@@ -855,14 +607,7 @@ namespace SudokuApplication
 
                 UpdateCells(previousCell);
 
-                // Reset unsaved changes
                 _unsavedChanges = false;
-
-                // Disable menu items
-                //getHintToolStripMenuItem.Enabled = false;
-                //surrenderToolStripMenuItem.Enabled = false;
-
-                // Alert user
                 BoardCompleteAlert();
             }
         }
@@ -870,6 +615,27 @@ namespace SudokuApplication
         private void SudokuForm_Load(object sender, EventArgs e)
         {
 
+        }
+
+        private void saveGameToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            saveFileDialog.FileName = Path.GetFileName(_filePath);
+            DialogResult result = saveFileDialog.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                string fileName = saveFileDialog.FileName;
+                SaveBoard(fileName);
+            }
+        }
+
+        private void openToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DialogResult openResult = openFileDialog.ShowDialog();
+            if (openResult == DialogResult.OK)
+            {
+                string fileName = openFileDialog.FileName;
+                LoadBoard(fileName);
+            }
         }
     }
 }

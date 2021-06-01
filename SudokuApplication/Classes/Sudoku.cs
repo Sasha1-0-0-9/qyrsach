@@ -7,11 +7,7 @@ namespace SudokuApplication
 {
     class Sudoku
     {
-        /* Fields */
-
         private AbstractBoard _board;
-
-        // Checks if a section is completed
         public bool IsSectionCompleted(int row, int column)
         {
             return Validator.ValidateCell(_board, row, column, true);
@@ -22,14 +18,11 @@ namespace SudokuApplication
             return Validator.ValidateBoard(_board, true);
         }
 
-        // Checks if all cells are valid
         public bool IsBoardValid()
         {
             return Validator.ValidateBoard(_board, false);
         }
 
-
-        /* Game */
         public bool NewGame(int size, int difficulty)
         {
             if (NewGame(size))
@@ -50,7 +43,18 @@ namespace SudokuApplication
              return true;
         }
 
-        // Locks the current numbers and makes them predefined
+        public bool ImportBoard(string boardData)
+        {
+            _board = Classes.Import.ParseDataIntoBoard(boardData);
+            return true;
+        }
+
+
+        public string ExportBoard()
+        {
+            return Classes.Export.ParseDataFromBoard(_board);
+        }
+
         public void LockNumbers()
         {
             if (Validator.ValidateBoard(_board))
@@ -99,8 +103,6 @@ namespace SudokuApplication
         {
                 return _board.IsNumberPredefined(row, column);
         }
-
-        /* Subscriptions */
 
         public void SubscribeToNumberChanges(INumberObserver observer)
         {

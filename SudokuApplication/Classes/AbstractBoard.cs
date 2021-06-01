@@ -9,7 +9,6 @@ namespace SudokuApplication
 {
     abstract class AbstractBoard
     {
-        /* Fields */
 
         private Cell[,] _boardCells;
 
@@ -20,11 +19,8 @@ namespace SudokuApplication
         private HashSet<INumberObserver> _numberObservers = new HashSet<INumberObserver>();
 
 
-        /* Constructors */
-
         public AbstractBoard()
         {
-            // Initialize fields
             _boardCells = new Cell[GetBoardSize(), GetBoardSize()];
 
             _rowCells = new Coordinate[GetBoardSize()][];
@@ -42,10 +38,7 @@ namespace SudokuApplication
             {
                 for (int j = 0; j != GetBoardSize(); j++)
                 {
-                    // Instantiate cell
                     _boardCells[i, j] = new Cell();
-
-                    // Add references to cell
                     Coordinate cell = new Coordinate(i, j);
                     _rowCells[i][j] = cell;
                     _columnCells[j][i] = cell;
@@ -54,7 +47,6 @@ namespace SudokuApplication
             }
 
         }
-
 
         public abstract int GetBoardSize();
 
@@ -91,8 +83,6 @@ namespace SudokuApplication
         }
 
 
-        /* Cell collections */
-
         public IEnumerable<Coordinate> GetRowCells(int row)
         {
             return _rowCells[row];}
@@ -112,8 +102,6 @@ namespace SudokuApplication
             return GetBlockCells(GetBlockPosition(row, column));
         }
 
-
-        /* Numbers */
 
         public int GetNumber(int row, int column)
         {
@@ -169,8 +157,6 @@ namespace SudokuApplication
         }
 
 
-        /* Block methods */
-
         public int GetBlockPosition(int row, int column)
         {
             int horizontalBlockPosition = column / GetBlockWidth();
@@ -188,8 +174,6 @@ namespace SudokuApplication
         }
 
 
-        /* INumberObservable */
-
         public void AddNumberObserver(INumberObserver observer)
         {
             _numberObservers.Add(observer);
@@ -206,26 +190,6 @@ namespace SudokuApplication
             {
                 observer.UpdateNumber(cell);
             }
-        }
-
-
-        /* IClonable */
-
-        // Deep copy
-        public object Clone()
-        {
-            // Create a new board of the same type and copy each cell
-            AbstractBoard board = (AbstractBoard)Activator.CreateInstance(GetType());
-
-            for (int i = 0; i != GetBoardSize(); i++)
-            {
-                for (int j = 0; j != GetBoardSize(); j++)
-                {
-                    board._boardCells[i, j] = (Cell)_boardCells[i, j].Clone();
-                }
-            }
-
-            return board;
         }
     }
 }

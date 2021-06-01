@@ -22,3 +22,5 @@ D:\qrsach\SudokuApp\SudokuApplication\obj\x86\Debug\SudokuApplication.pdb
 D:\qrsach\SudokuApp\SudokuApplication\bin\Debug\SudokuApplication.exe.config
 D:\qrsach\SudokuApp\SudokuApplication\bin\Debug\SudokuApplication.exe
 D:\qrsach\SudokuApp\SudokuApplication\bin\Debug\SudokuApplication.pdb
+D:\qrsach\SudokuApp\SudokuApplication\obj\x86\Debug\SudokuApplication.Menu.resources
+D:\qrsach\SudokuApp\SudokuApplication\obj\x86\Debug\SudokuApplication.HelpDialog.resources

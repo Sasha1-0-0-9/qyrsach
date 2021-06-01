@@ -11,7 +11,6 @@ namespace SudokuApplication
 {
     public partial class NewGameDialog : Form
     {
-        /* Fields */
 
         private SudokuForm _sudokuForm;
 
@@ -21,8 +20,6 @@ namespace SudokuApplication
         private int _boardSize;
         private int _difficulty;
 
-
-        /* Constructors */
 
         public NewGameDialog(SudokuForm sudokuForm)
         {
@@ -36,9 +33,6 @@ namespace SudokuApplication
 
             _difficulty = 1;
         }
-
-
-        /* Events */
 
         private void NewGameDialog_Load(object sender, EventArgs e)
         {
@@ -131,11 +125,9 @@ namespace SudokuApplication
             this.Close();
         }
 
-        //private void createBlankBoard_Click(object sender, EventArgs e)
-        //{
-        //    _sudokuForm.CreateBlankBoard(_boardSize);
+        private void groupBox1_Enter(object sender, EventArgs e)
+        {
 
-        //    this.Close();
-        //}
+        }
     }
 }

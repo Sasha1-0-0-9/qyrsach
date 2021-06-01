@@ -15,7 +15,7 @@ namespace SudokuApplication
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new SudokuForm());
+            Application.Run(new Menu());
         }
     }
 }

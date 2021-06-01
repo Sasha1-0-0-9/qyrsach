@@ -11,7 +11,6 @@ namespace SudokuApplication
     {
         public static Bitmap CreateThumbnail(int boardSize, int blockWidth, int blockHeight)
         {
-            // Configuration
             int margin = 5;
             int boardFactor = 10;
             int width = boardFactor * boardSize + margin * 2;
@@ -25,7 +24,6 @@ namespace SudokuApplication
             int rectangleWidth = boardFactor * blockWidth;
             int rectangleHeight = boardFactor * blockHeight;
 
-            // Background color
             graphicsContext.Clear(SudokuForm.DefaultBackColor);
 
             for (int i = 0; i != boardSize / blockHeight; i++)

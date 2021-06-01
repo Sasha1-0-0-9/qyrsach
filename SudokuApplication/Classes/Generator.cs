@@ -8,17 +8,12 @@ namespace SudokuApplication
 {
     class Generator
     {
-        /* Fields */
 
         AbstractBoard _board;
         int Backtracking = 0;
 
-
-        /* Constructors */
-
         public Generator(AbstractBoard board)
         {
-            // Initialize fields
             _board = board;
         }
 
@@ -36,13 +31,11 @@ namespace SudokuApplication
             List<int> possibleValuesInCell;
             do
             { 
-                if (Backtracking > 40000)//max times to run fillboard, jumps out of method
-                    return;
 
                 _board.ClearNumber(row, column);
-                possibleValuesInCell = new List<int>().GenerateAllPossibleValues(_board.GetBoardSize());// list numbers depending on boardsize ((1-4),(1-6),(1-9),(1-12),(1-16))
-                RemoveInvalidValuesFromCell(ref possibleValuesInCell, row, column); //  remove invalid numbers for the cell
-                foreach (int triedNumber in triedNumbers[row, column]) //remove tried numbers in cell from possibleValuesInCell
+                possibleValuesInCell = new List<int>().GenerateAllPossibleValues(_board.GetBoardSize());
+                RemoveInvalidValuesFromCell(ref possibleValuesInCell, row, column);
+                foreach (int triedNumber in triedNumbers[row, column]) 
                 {
                     possibleValuesInCell.Remove(triedNumber);
                 }
@@ -69,8 +62,8 @@ namespace SudokuApplication
 
                 else
                 {
-                    int randomIndex = RandomNumberGen(0, possibleValuesInCell.Count);  // Choose random index 
-                    int randomNumber = possibleValuesInCell.ElementAt<int>(randomIndex); // Get number in index
+                    int randomIndex = RandomNumberGen(0, possibleValuesInCell.Count);  
+                    int randomNumber = possibleValuesInCell.ElementAt<int>(randomIndex);
 
                     _board.SetNumber(row, column, randomNumber, false); 
                     triedNumbers[row, column].Add(randomNumber);
@@ -80,14 +73,6 @@ namespace SudokuApplication
             } while (possibleValuesInCell.Count == 0);                        
         }
 
-        /// <summary>
-        /// Difficulty:
-        /// 0 - Easy
-        /// 1 - Medium
-        /// 2 - Hard
-        /// 3 - Expert
-        /// </summary>
-        /// <param name="difficulty"></param>
         public void Generate(int difficulty)
         {
             bool maxBacktacking;
@@ -114,10 +99,9 @@ namespace SudokuApplication
                         break;
                 }
                 
-                Console.WriteLine("Backtracking iterations: {0}", Backtracking);
             } while (maxBacktacking);
 
-            switch (_board.GetBoardSize()) //cells to clear depending on boardsize
+            switch (_board.GetBoardSize())
             { 
                 case 4:
                     remove(4, 6, 8, 10, difficulty);
@@ -136,11 +120,11 @@ namespace SudokuApplication
                     break;
             }
 
-            _board.ConvertExistingNumbersToPredefined(); //set remaining numbers as predefined       
+            _board.ConvertExistingNumbersToPredefined();   
             
         }
 
-        private void remove(int easy, int medium, int hard, int expert, int difficulty) //cells to clear, depending on difficulty
+        private void remove(int easy, int medium, int hard, int expert, int difficulty)
         {          
             switch (difficulty)
             {
@@ -159,7 +143,7 @@ namespace SudokuApplication
             }            
         }
                 
-        private void RemoveNumbersInCell( int CellsToClear) // clear cells
+        private void RemoveNumbersInCell( int CellsToClear) 
         {           
             int j = 0;
             do
@@ -177,7 +161,6 @@ namespace SudokuApplication
 
         private void RemoveInvalidValuesFromCell(ref List<int> possibleValuesInCell, int row, int column)
         {
-            // Remove possible values for each section
             RemoveInvalidValuesFromCellForSection(ref possibleValuesInCell, _board.GetRowCells(row));
             RemoveInvalidValuesFromCellForSection(ref possibleValuesInCell, _board.GetColumnCells(column));
             RemoveInvalidValuesFromCellForSection(ref possibleValuesInCell, _board.GetBlockCells(row, column));

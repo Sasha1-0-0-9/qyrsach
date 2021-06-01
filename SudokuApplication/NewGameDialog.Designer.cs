@@ -58,7 +58,7 @@
             // 
             this.radioHard.AutoSize = true;
             this.radioHard.Location = new System.Drawing.Point(221, 23);
-            this.radioHard.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.radioHard.Margin = new System.Windows.Forms.Padding(4);
             this.radioHard.Name = "radioHard";
             this.radioHard.Size = new System.Drawing.Size(60, 21);
             this.radioHard.TabIndex = 97;
@@ -72,7 +72,7 @@
             this.radioMedium.AutoSize = true;
             this.radioMedium.Checked = true;
             this.radioMedium.Location = new System.Drawing.Point(135, 23);
-            this.radioMedium.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.radioMedium.Margin = new System.Windows.Forms.Padding(4);
             this.radioMedium.Name = "radioMedium";
             this.radioMedium.Size = new System.Drawing.Size(78, 21);
             this.radioMedium.TabIndex = 96;
@@ -85,7 +85,7 @@
             // 
             this.radioEasy.AutoSize = true;
             this.radioEasy.Location = new System.Drawing.Point(59, 23);
-            this.radioEasy.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.radioEasy.Margin = new System.Windows.Forms.Padding(4);
             this.radioEasy.Name = "radioEasy";
             this.radioEasy.Size = new System.Drawing.Size(60, 21);
             this.radioEasy.TabIndex = 95;
@@ -97,7 +97,7 @@
             // 
             this.radioExpert.AutoSize = true;
             this.radioExpert.Location = new System.Drawing.Point(289, 23);
-            this.radioExpert.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.radioExpert.Margin = new System.Windows.Forms.Padding(4);
             this.radioExpert.Name = "radioExpert";
             this.radioExpert.Size = new System.Drawing.Size(69, 21);
             this.radioExpert.TabIndex = 100;
@@ -118,13 +118,14 @@
             this.groupBox1.Controls.Add(this.picture6x6);
             this.groupBox1.Controls.Add(this.picture4x4);
             this.groupBox1.Location = new System.Drawing.Point(16, 15);
-            this.groupBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(4);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(4);
             this.groupBox1.Size = new System.Drawing.Size(440, 431);
             this.groupBox1.TabIndex = 101;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Select Board Size:";
+            this.groupBox1.Enter += new System.EventHandler(this.groupBox1_Enter);
             // 
             // label16x16
             // 
@@ -149,7 +150,7 @@
             // picture16x16
             // 
             this.picture16x16.Location = new System.Drawing.Point(196, 183);
-            this.picture16x16.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.picture16x16.Margin = new System.Windows.Forms.Padding(4);
             this.picture16x16.Name = "picture16x16";
             this.picture16x16.Size = new System.Drawing.Size(229, 212);
             this.picture16x16.TabIndex = 7;
@@ -159,7 +160,7 @@
             // picture12x12
             // 
             this.picture12x12.Location = new System.Drawing.Point(15, 233);
-            this.picture12x12.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.picture12x12.Margin = new System.Windows.Forms.Padding(4);
             this.picture12x12.Name = "picture12x12";
             this.picture12x12.Size = new System.Drawing.Size(176, 162);
             this.picture12x12.TabIndex = 6;
@@ -201,7 +202,7 @@
             // 
             this.picture9x9.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.picture9x9.Location = new System.Drawing.Point(289, 28);
-            this.picture9x9.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.picture9x9.Margin = new System.Windows.Forms.Padding(4);
             this.picture9x9.Name = "picture9x9";
             this.picture9x9.Size = new System.Drawing.Size(135, 125);
             this.picture9x9.TabIndex = 2;
@@ -211,7 +212,7 @@
             // picture6x6
             // 
             this.picture6x6.Location = new System.Drawing.Point(147, 65);
-            this.picture6x6.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.picture6x6.Margin = new System.Windows.Forms.Padding(4);
             this.picture6x6.Name = "picture6x6";
             this.picture6x6.Size = new System.Drawing.Size(96, 89);
             this.picture6x6.TabIndex = 1;
@@ -221,7 +222,7 @@
             // picture4x4
             // 
             this.picture4x4.Location = new System.Drawing.Point(15, 90);
-            this.picture4x4.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.picture4x4.Margin = new System.Windows.Forms.Padding(4);
             this.picture4x4.Name = "picture4x4";
             this.picture4x4.Size = new System.Drawing.Size(69, 64);
             this.picture4x4.TabIndex = 0;
@@ -236,9 +237,9 @@
             this.groupBox2.Controls.Add(this.radioHard);
             this.groupBox2.Controls.Add(this.radioExpert);
             this.groupBox2.Location = new System.Drawing.Point(16, 457);
-            this.groupBox2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox2.Margin = new System.Windows.Forms.Padding(4);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox2.Padding = new System.Windows.Forms.Padding(4);
             this.groupBox2.Size = new System.Drawing.Size(440, 181);
             this.groupBox2.TabIndex = 102;
             this.groupBox2.TabStop = false;
@@ -247,7 +248,7 @@
             // generateBoard
             // 
             this.generateBoard.Location = new System.Drawing.Point(106, 62);
-            this.generateBoard.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.generateBoard.Margin = new System.Windows.Forms.Padding(4);
             this.generateBoard.Name = "generateBoard";
             this.generateBoard.Size = new System.Drawing.Size(200, 28);
             this.generateBoard.TabIndex = 104;
@@ -264,7 +265,7 @@
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "NewGameDialog";
             this.Text = "New Game";
             this.Load += new System.EventHandler(this.NewGameDialog_Load);
